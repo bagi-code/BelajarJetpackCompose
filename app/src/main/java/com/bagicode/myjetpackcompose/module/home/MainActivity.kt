@@ -3,29 +3,42 @@ package com.bagicode.myjetpackcompose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.bagicode.myjetpackcompose.model.ProductResponse
+import com.bagicode.myjetpackcompose.module.home.MainViewModel
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            BottomMenu()
+            BottomMenu(viewModel)
         }
     }
 }
 
 @Composable
-fun BottomMenu() {
+fun BottomMenu(viewModel: MainViewModel) {
     val items = listOf(
         Screen.Home,
         Screen.Profile,
@@ -65,7 +78,7 @@ fun BottomMenu() {
         }
     ) { //innerPadding ->
         NavHost(navController, startDestination = Screen.Home.route) {
-            composable(Screen.Home.route) { HomeScreen() }
+            composable(Screen.Home.route) { HomeScreen(viewModel) }
             composable(Screen.Profile.route) { ProfileScreen() }
             composable(Screen.Settings.route) { SettingsScreen() }
         }
@@ -73,8 +86,38 @@ fun BottomMenu() {
 }
 
 @Composable
-fun HomeScreen() {
-    Text(text = "This home page")
+fun HomeScreen(viewModel : MainViewModel) {
+    val items = viewModel.listProduct.value
+
+    LaunchedEffect(true) {
+        viewModel.getProduct()
+    }
+
+    Surface(modifier = Modifier.fillMaxSize()) {
+        LazyColumn {
+            items(items) { item ->
+//                Text(text = "This id ${item.title}")
+                ItemCard(item = item)
+            }
+        }
+    }
+}
+
+@Composable
+fun ItemCard(item: ProductResponse.ProductItem) {
+    Card(
+        modifier = Modifier.padding(8.dp), // Atur jarak antara kartu
+        elevation = 4.dp, // Atur tinggi bayangan kartu
+        shape = MaterialTheme.shapes.medium // Atur corner yang melengkung
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            // Tampilkan konten item di dalam Card
+            Text(text = item.title.orEmpty())
+            Text(text = item.description.orEmpty())
+            Text(text = item.thumbnail.orEmpty())
+            // Misalnya tambahkan gambar, deskripsi, tombol, dll.
+        }
+    }
 }
 
 @Composable
@@ -93,8 +136,8 @@ sealed class Screen(val route: String, val label: String, val icon: Int) {
     object Settings : Screen("settings", "Settings", R.drawable.ic_settings)
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewBottomMenu() {
-    BottomMenu()
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun PreviewBottomMenu() {
+//    BottomMenu()
+//}

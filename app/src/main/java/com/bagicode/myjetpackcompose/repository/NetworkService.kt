@@ -1,6 +1,7 @@
 package com.bagicode.myjetpackcompose.repository
 
 import com.bagicode.myjetpackcompose.model.LoginResponse
+import com.bagicode.myjetpackcompose.model.ProductResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -12,9 +13,13 @@ object NetworkService {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    private val loginApi = retrofit.create(LoginApi::class.java)
+    private val loginApi = retrofit.create(ApiService::class.java)
 
     suspend fun login(username: String, password: String): LoginResponse {
         return loginApi.login(username, password)
+    }
+
+    suspend fun product(): ProductResponse {
+        return loginApi.products()
     }
 }
