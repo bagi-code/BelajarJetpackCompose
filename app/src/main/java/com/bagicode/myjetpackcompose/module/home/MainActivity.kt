@@ -1,9 +1,13 @@
 package com.bagicode.myjetpackcompose
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,14 +18,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.bagicode.myjetpackcompose.model.ProductResponse
+import com.bagicode.myjetpackcompose.module.detail.DetailActivity
 import com.bagicode.myjetpackcompose.module.home.MainViewModel
 
 class MainActivity : ComponentActivity() {
@@ -97,25 +104,30 @@ fun HomeScreen(viewModel : MainViewModel) {
         LazyColumn {
             items(items) { item ->
 //                Text(text = "This id ${item.title}")
-                ItemCard(item = item)
+                ItemCard(item = item, LocalContext.current)
             }
         }
     }
 }
 
 @Composable
-fun ItemCard(item: ProductResponse.ProductItem) {
+fun ItemCard(item: ProductResponse.ProductItem, context: Context) {
     Card(
-        modifier = Modifier.padding(8.dp), // Atur jarak antara kartu
-        elevation = 4.dp, // Atur tinggi bayangan kartu
-        shape = MaterialTheme.shapes.medium // Atur corner yang melengkung
+        elevation = 4.dp,
+        shape = MaterialTheme.shapes.medium,
+        modifier = Modifier
+            .padding(8.dp)
+            .clickable {
+                //Toast.makeText(context, "Item $item diklik!", Toast.LENGTH_SHORT).show()
+                val intent = Intent(context, DetailActivity::class.java)
+                    .putExtra("title", item.title)
+                context.startActivity(intent)
+            }
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            // Tampilkan konten item di dalam Card
             Text(text = item.title.orEmpty())
             Text(text = item.description.orEmpty())
             Text(text = item.thumbnail.orEmpty())
-            // Misalnya tambahkan gambar, deskripsi, tombol, dll.
         }
     }
 }

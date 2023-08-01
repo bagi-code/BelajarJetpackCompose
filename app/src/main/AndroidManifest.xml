@@ -31,6 +31,7 @@
         </activity>
 
         <activity android:name=".MainActivity"/>
+        <activity android:name=".module.detail.DetailActivity"/>
         <activity android:name=".module.auth.LoginActivity"/>
     </application>
 
