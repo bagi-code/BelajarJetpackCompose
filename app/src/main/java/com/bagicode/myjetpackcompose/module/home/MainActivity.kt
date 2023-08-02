@@ -121,6 +121,7 @@ fun ItemCard(item: ProductResponse.ProductItem, context: Context) {
                 //Toast.makeText(context, "Item $item diklik!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(context, DetailActivity::class.java)
                     .putExtra("title", item.title)
+                    .putExtra("url", item.thumbnail)
                 context.startActivity(intent)
             }
     ) {
