@@ -7,9 +7,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -94,7 +94,7 @@ fun ProgressDialog() {
                     .padding(16.dp)
             )
         },
-        buttons = {
+        confirmButton = {
             /* Tidak menampilkan tombol apa pun di dalam dialog */
         },
         properties = DialogProperties(dismissOnClickOutside = false)
